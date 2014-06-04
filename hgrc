@@ -23,7 +23,7 @@ git =
 
 collapse = ~/.hgext/collapse.py
 histedit = ~/.hgext/histedit
-crecord = ~/.hgext/crecord/crecord
+#crecord = ~/.hgext/crecord/crecord
 convert =
 
 [color]
