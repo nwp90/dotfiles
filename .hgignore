@@ -1,0 +1,20 @@
+syntax: glob
+
+xchat2/scrollback
+*~
+*.pyc
+*.swp
+*.swo
+*_flymake.py
+*.flv
+*.orig
+
+syntax: regexp
+(^|/)\.\#
+(^|/)\#.*\#$
+Thumbs.db
+.coverage
+.project
+.pydevproject
+.metadata
+sqlite3*

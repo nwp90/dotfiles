@@ -1,0 +1,59 @@
+[ui]
+username = Nick Phillips <nick.phillips@otago.ac.nz>
+#verbose = True
+#debug = 1
+
+[trusted]
+users = kit
+
+[extensions]
+
+#color =
+#transplant =
+#rebase =
+#inotify =
+#hgk =
+# b0rk b0rk b0rk
+#chart = ~/.hgext/hg-chart-extension/hgext/chart.py
+# This causes an exception on push. Heaven knows why.
+#activity = ~/.hgext/activity.py
+# see http://mercurial.selenic.com/wiki/QctExtension?highlight=%28plugin%29
+qct =
+git =
+
+collapse = ~/.hgext/collapse.py
+histedit = ~/.hgext/histedit
+crecord = ~/.hgext/crecord/crecord
+convert =
+
+[color]
+status.modified = magenta bold
+status.added = green bold
+status.removed = red bold
+status.deleted = cyan bold
+status.unknown = blue bold
+status.ignored = black bold
+
+#status.modified = blue bold underline red_background
+#status.added = green bold
+#status.removed = red bold blue_background
+#status.deleted = cyan bold underline
+#status.unknown = magenta bold underline
+#status.ignored = black bold
+
+#status.clean = none
+#status.copied = none
+
+#qseries.applied = blue bold underline
+#qseries.unapplied = black bold
+#qseries.missing = red bold
+
+#diff.diffline = bold
+#diff.extended = cyan bold
+#diff.file_a = red bold
+#diff.file_b = green bold
+#diff.hunk = magenta
+#diff.deleted = red
+#diff.inserted = green
+#diff.changed = white
+#diff.trailingwhitespace = bold red_background

@@ -1,0 +1,25 @@
+syntax: glob
+
+fredweb.db
+fredtest.db
+*~
+
+fred_db/fredmgr-log
+*.pyc
+*.swp
+*.swo
+*_flymake.py
+*.flv
+*.orig
+
+doc/_build/
+
+syntax: regexp
+(^|/)\.\#
+(^|/)\#.*\#$
+Thumbs.db
+.coverage
+.project
+.pydevproject
+.metadata
+sqlite3*
