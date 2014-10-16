@@ -12,3 +12,6 @@ for thing in $DOTFILES; do
   cp $CPARGS $thing ~/.$thing
 done
 
+for thing in $(ls bin); do
+  install -D -m775 -onwp -gnwp bin/${thing} ~/bin/${thing}
+done
