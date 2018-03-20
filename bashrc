@@ -120,3 +120,13 @@ if ! shopt -oq posix; then
     . /etc/bash_completion
   fi
 fi
+
+# Safer. If expecting a completion to stop before the end so you can add *,
+# but it completes, and you're not paying attention...
+#
+# Yes I have.
+#
+compopt -o nospace rm
+
+# default Debian debsign completion is shit
+compopt -o dirnames debsign
