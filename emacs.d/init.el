@@ -38,6 +38,7 @@
 		      cython-mode
 		      clojure-mode
 		      clojure-test-mode
+		      yafolding
                       )
   "A list of packages to ensure are installed at launch.")
 
@@ -57,10 +58,15 @@
 (add-to-list 'auto-mode-alist '("\\.php4\\'" . php-mode))
 (add-to-list 'auto-mode-alist '("\\.php\\'" . php-mode))
 
-(add-to-list 'auto-mode-alist '("\\.js$" . js2-mode))
+;; (add-to-list 'auto-mode-alist '("\\.js$" . js2-mode))
+;; (custom-set-variables
+;;  '(js2-basic-offset 2)
+;;  '(js2-bounce-indent-p t))
+
+(add-to-list 'auto-mode-alist '("\\.ts$" . js-mode))
+(add-to-list 'auto-mode-alist '("\\.js$" . js-mode))
 (custom-set-variables
- '(js2-basic-offset 2)
- '(js2-bounce-indent-p t))
+ '(js-indent-level 2))
 
 ;; ; directory node comes from first directory...
 
@@ -181,6 +187,7 @@
 (add-hook `cperl-mode-hook `turn-on-font-lock)
 (add-hook `html-mode-hook `turn-on-font-lock)
 (add-hook `python-mode-hook `turn-on-font-lock)
+(add-hook `python-mode-hook `(lambda() (modify-syntax-entry ?_ "_" python-mode-syntax-table)))
 
 ;; (require 'un-define)
 ;; (set-default-coding-systems 'utf-8)
@@ -357,12 +364,13 @@
 ;;(add-to-list 'auto-mode-alist '("\\.pxi\\'" . cython-mode))
 
 ;;; Pymacs
-(autoload 'pymacs-apply "pymacs")
-(autoload 'pymacs-call "pymacs")
-(autoload 'pymacs-eval "pymacs" nil t)
-(autoload 'pymacs-exec "pymacs" nil t)
-(autoload 'pymacs-load "pymacs" nil t)
-(autoload 'pymacs-autoload "pymacs")
+;(autoload 'pymacs-apply "pymacs")
+;(autoload 'pymacs-call "pymacs")
+;(autoload 'pymacs-eval "pymacs" nil t)
+;(autoload 'pymacs-exec "pymacs" nil t)
+;(autoload 'pymacs-load "pymacs" nil t)
+;(autoload 'pymacs-autoload "pymacs")
+
 ;;(eval-after-load "pymacs"
 ;;  '(add-to-list 'pymacs-load-path YOUR-PYMACS-DIRECTORY"))
 
