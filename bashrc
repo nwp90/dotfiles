@@ -126,7 +126,9 @@ fi
 #
 # Yes I have.
 #
-compopt -o nospace rm
+compopt -o nospace rm > /dev/null 2>&1
 
 # default Debian debsign completion is shit
-compopt -o dirnames debsign
+if [ -e /usr/share/bash-completion/completions/debsign ]; then
+   compopt -o dirnames debsign
+fi
