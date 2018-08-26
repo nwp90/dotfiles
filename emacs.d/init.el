@@ -9,10 +9,17 @@
     (server-start))
 
 (require 'package)
-(add-to-list 'package-archives
-             '("marmalade" . "http://marmalade-repo.org/packages/") t)
-(add-to-list 'package-archives
-	     '("melpa" . "http://melpa.milkbox.net/packages/") t)
+(let* ((no-ssl (and (memq system-type '(windows-nt ms-dos))
+                    (not (gnutls-available-p))))
+       (proto (if no-ssl "http" "https")))
+  ;; Comment/uncomment these two lines to enable/disable MELPA and MELPA Stable as desired
+  ;(add-to-list 'package-archives (cons "melpa" (concat proto "://melpa.org/packages/")) t)
+  (add-to-list 'package-archives (cons "melpa-stable" (concat proto "://stable.melpa.org/packages/")) t)
+  (add-to-list 'package-archives (cons "marmalade" (concat proto "://marmalade-repo.org/packages/")) t)
+)
+;(add-to-list 'package-archives '("melpa" . "http://melpa.org/packages/") t)
+;(add-to-list 'package-archives '("melpa-stable" . "http://stable.melpa.org/packages/") t)
+;(add-to-list 'package-archives '("marmalade" . "http://marmalade-repo.org/packages/") t)
 (package-initialize)
 (when (not package-archive-contents)
   (package-refresh-contents))
@@ -24,20 +31,18 @@
 ;; flycheck-color-mode-line (currently broken in marmalade)
 
 
+;                       yaml-mode
+;                       sass-mode
+
 ;; Packages
-(defvar my-packages '(rainbow-delimiters
-                      flycheck
+(defvar my-packages '(flycheck
 		      flycheck-color-mode-line
                       markdown-mode
-                      js2-mode
                       nginx-mode
 		      pony-mode
-                      haskell-mode
                       yaml-mode
                       sass-mode
 		      cython-mode
-		      clojure-mode
-		      clojure-test-mode
 		      yafolding
                       )
   "A list of packages to ensure are installed at launch.")
@@ -51,7 +56,8 @@
 (global-set-key [(control x)(control c)] 'server-edit)
 (global-set-key [(control x)(meta c)] 'save-buffers-kill-emacs)
 
-(add-hook 'prog-mode-hook 'rainbow-delimiters-mode)
+;; Slooooooow...
+;;(add-hook 'prog-mode-hook 'rainbow-delimiters-mode)
 
 (autoload 'php-mode "php-mode" "PHP editing mode" t)
 (add-to-list 'auto-mode-alist '("\\.php3\\'" . php-mode))
@@ -376,7 +382,7 @@
 
 ;;; ropemacs
 ;; need newer version of python-rope (than 0.9.2) to work in mercurial repos
-(pymacs-load "ropemacs" "rope-")
+;(pymacs-load "ropemacs" "rope-")
 (defvar ropemacs-enable-autoimport)
 (setq ropemacs-enable-autoimport t)
 
@@ -387,7 +393,8 @@
 ;; nginx
 (require 'nginx-mode)
 
-(add-hook 'prog-mode-hook 'rainbow-delimiters-mode)
+;; Seems this is the actual culprit for python mode slowness
+;;(add-hook 'prog-mode-hook 'rainbow-delimiters-mode)
 
 (when (locate-library "mercurial")
   (autoload 'hg-find-file-hook "mercurial")
