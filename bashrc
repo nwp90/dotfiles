@@ -65,6 +65,12 @@ if [ -n "$force_color_prompt" ]; then
     fi
 fi
 
+envprompt=""
+if [ -f /etc/profile.d/uoo_prompt.sh ]; then
+    . /etc/profile.d/uoo_prompt.sh
+    envprompt=$(environment_prompt_fragment)
+fi
+
 if [ "$color_prompt" = yes ]; then
     PS1='${debian_chroot:+($debian_chroot)}\[\033[01;32m\]\u@\h\[\033[00m\]:\[\033[01;34m\]\w\[\033[00m\]\$ '
     # newer?
@@ -83,6 +89,8 @@ xterm*|rxvt*)
 *)
     ;;
 esac
+
+PS1="${envprompt}${PS1}"
 
 # Alias definitions.
 # You may want to put all your additions into a separate file like

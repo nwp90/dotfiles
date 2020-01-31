@@ -29,7 +29,7 @@ for thing in $(ls bin); do
       if [ -d ~/bin/"$thing" ]; then
 	  echo "bin/$thing is a directory; ignoring"
       else
-	  install -D -m775 -onwp -gnwp bin/"${thing}" ~/bin/"${thing}"
+	  install -D -m775 -o$(whoami) -g$(whoami) bin/"${thing}" ~/bin/"${thing}"
       fi
   fi
 done
