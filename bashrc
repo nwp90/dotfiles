@@ -10,7 +10,13 @@ export HGMERGE=/usr/bin/meld
 export LC_COLLATE=C
 
 # If not running interactively, don't do anything. Unless we've already done it.
-[ -z "$PS1" ] && return
+case $- in
+    *i*) ;;
+      *) return;;
+esac
+# Old way of detecting interactive
+#[ -z "$PS1" ] && return
+
 export VISUAL=~/bin/edit
 export EDITOR=${VISUAL}
 export ALTERNATE_EDITOR=emacs
@@ -84,15 +90,6 @@ xterm*|rxvt*)
     ;;
 esac
 
-# Alias definitions.
-# You may want to put all your additions into a separate file like
-# ~/.bash_aliases, instead of adding them here directly.
-# See /usr/share/doc/bash-doc/examples in the bash-doc package.
-
-if [ -f ~/.bash_aliases ]; then
-    . ~/.bash_aliases
-fi
-
 # enable color support of ls and also add handy aliases
 if [ "$TERM" != "dumb" ]  && [ -x /usr/bin/dircolors ]; then
     test -r ~/.dircolors && eval "$(dircolors -b ~/.dircolors)" || eval "$(dircolors -b)"
@@ -109,6 +106,15 @@ fi
 #alias ll='ls -l'
 #alias la='ls -A'
 #alias l='ls -CF'
+
+# Alias definitions.
+# You may want to put all your additions into a separate file like
+# ~/.bash_aliases, instead of adding them here directly.
+# See /usr/share/doc/bash-doc/examples in the bash-doc package.
+
+if [ -f ~/.bash_aliases ]; then
+    . ~/.bash_aliases
+fi
 
 # enable programmable completion features (you don't need to enable
 # this, if it's already enabled in /etc/bash.bashrc and /etc/profile
