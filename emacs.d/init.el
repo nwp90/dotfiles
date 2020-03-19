@@ -15,7 +15,7 @@
   ;; Comment/uncomment these two lines to enable/disable MELPA and MELPA Stable as desired
   ;(add-to-list 'package-archives (cons "melpa" (concat proto "://melpa.org/packages/")) t)
   (add-to-list 'package-archives (cons "melpa-stable" (concat proto "://stable.melpa.org/packages/")) t)
-  (add-to-list 'package-archives (cons "marmalade" (concat proto "://marmalade-repo.org/packages/")) t)
+  ;(add-to-list 'package-archives (cons "marmalade" (concat proto "://marmalade-repo.org/packages/")) t)
 )
 ;(add-to-list 'package-archives '("melpa" . "http://melpa.org/packages/") t)
 ;(add-to-list 'package-archives '("melpa-stable" . "http://stable.melpa.org/packages/") t)
@@ -43,7 +43,7 @@
                       yaml-mode
                       sass-mode
 		      cython-mode
-		      yafolding
+		      ;yafolding
                       )
   "A list of packages to ensure are installed at launch.")
 
@@ -265,26 +265,28 @@
 ;; ;; see http://github.com/purcell/emacs.d/blob/master/site-lisp/flymake-ruby/flymake-ruby.el
 ;; ;;
 
-(require 'color-theme)
-(load-file "~/.emacs.d/emacs-color-theme-x-nwp")
-(load-file "~/.emacs.d/emacs-color-theme-tty-nwp")
-
+;; Not available in Ubuntu eoan - install elpa-color-theme-modern when focal
+;; arrives
+;(require 'color-theme)
+;(load-file "~/.emacs.d/emacs-color-theme-x-nwp")
+;(load-file "~/.emacs.d/emacs-color-theme-tty-nwp")
+;
 ;; select theme - first list element is for windowing system, second is for console/terminal
-(defvar color-theme-choices)
-(setq color-theme-choices
-      '(nwp-x-color-theme nwp-tty-color-theme))
-
+;(defvar color-theme-choices)
+;(setq color-theme-choices
+;      '(nwp-x-color-theme nwp-tty-color-theme))
+;
 ;; See http://www.emacswiki.org/emacs/ColorTheme
 ;;
-
+;
 ;; default-start
-(funcall (lambda (cols)
-    	   (let ((color-theme-is-global nil))
-    	     (eval
-    	      (append '(if window-system)
-    		      (mapcar (lambda (x) (cons x nil))
-    			      cols)))))
-    	 color-theme-choices)
+;(funcall (lambda (cols)
+;    	   (let ((color-theme-is-global nil))
+;    	     (eval
+;    	      (append '(if window-system)
+;    		      (mapcar (lambda (x) (cons x nil))
+;    			      cols)))))
+;    	 color-theme-choices)
 
 ;; test for each additional frame or console
 
@@ -292,24 +294,24 @@
 ;; see http://dto.github.io/notebook/require-cl.html#sec-8
 ;; (eval-when-compile (require 'cl))
 ;; No longer necessary; new way:
-(require 'cl-lib)
-(fset 'test-win-sys
-      (funcall (lambda (cols)
-    		 (lexical-let ((cols cols))
-    		   (lambda (frame)
-    		     (let ((color-theme-is-global nil))
-		       ;; must be current for local ctheme
-		       (select-frame frame)
-		       ;; test winsystem
-		       (eval
+;(require 'cl-lib)
+;(fset 'test-win-sys
+;      (funcall (lambda (cols)
+;    		 (lexical-let ((cols cols))
+;    		   (lambda (frame)
+;    		     (let ((color-theme-is-global nil))
+;		       ;; must be current for local ctheme
+;		       (select-frame frame)
+;		       ;; test winsystem
+;		       (eval
 ;; window-system a variable not a function (in emacs22)
 ;;			(append '(if (window-system frame))
-			(append '(if window-system)
-				(mapcar (lambda (x) (cons x nil))
-					cols)))))))
-    	       color-theme-choices ))
+;			(append '(if window-system)
+;				(mapcar (lambda (x) (cons x nil))
+;					cols)))))))
+;   	       color-theme-choices ))
 ;; hook on after-make-frame-functions
-(add-hook 'after-make-frame-functions 'test-win-sys)
+;(add-hook 'after-make-frame-functions 'test-win-sys)
 
 ;; end per-frame color theme selection from http://www.emacswiki.org/emacs/ColorTheme
 
