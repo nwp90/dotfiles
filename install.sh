@@ -14,7 +14,7 @@ for thing in $DOTFILES; do
   else
       echo "Installing $thing"
       if [ -d ~/".$thing" ]; then
-	  cp $CPARGS "$thing/*" ~/".$thing/"
+	  cp $CPARGS "$thing"/* ~/".$thing/"
       else
 	  cp $CPARGS "$thing" ~/".$thing"
       fi
