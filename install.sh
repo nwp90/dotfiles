@@ -9,7 +9,7 @@ fi
 DOTFILES="bash_aliases bash_logout bash_profile bashrc emacs.d gitconfig hgext hgrc profile pylintrc xchat2"
 
 for thing in $DOTFILES; do
-  if diff -urN "$thing" ~/".$thing" ; then
+  if diff -urN ~/".$thing" "$thing" ; then
       echo "$thing already installed"
   else
       echo "Installing $thing"
@@ -22,7 +22,7 @@ for thing in $DOTFILES; do
 done
 
 for thing in $(ls bin); do
-  if diff -urN "bin/$thing" ~/bin/".$thing" ; then
+  if diff -urN ~/bin/"$thing" "bin/$thing" ; then
       echo "$thing already installed"
   else
       echo "Installing bin/$thing"

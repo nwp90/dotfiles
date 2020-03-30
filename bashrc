@@ -21,6 +21,15 @@ export VISUAL=~/bin/edit
 export EDITOR=${VISUAL}
 export ALTERNATE_EDITOR=emacs
 
+# Avoid "gpg: signing failed: Inappropriate ioctl for device" on `git tag -sf`
+# https://gist.github.com/repodevs/a18c7bb42b2ab293155aca889d447f1b
+export GPG_TTY=$(/usr/bin/tty)
+
+# Don't pop up passphrase dialog in console GUI if I'm using ssh...
+if [ -n "${SSH_CONNECTION}" ]; then
+    export PINENTRY_USER_DATA="USE_CURSES=1"
+fi
+
 # append to the history file, don't overwrite it
 shopt -s histappend
 
