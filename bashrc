@@ -81,11 +81,11 @@ if [ -n "$force_color_prompt" ]; then
 fi
 
 if [ "$color_prompt" = yes ]; then
-    PS1='${debian_chroot:+($debian_chroot)}\[\033[01;32m\]\u@\h\[\033[00m\]:\[\033[01;34m\]\w\[\033[00m\]\$ '
+    PS1='${debian_chroot:+($debian_chroot)}\[\033[01;32m\]\u@\h\[\033[00m\]:\[\033[01;34m\]\w\[\033[00m\]$(__git_ps1)\$ '
     # newer?
 	#PS1='${debian_chroot:+($debian_chroot)}\[\033[01;32m\]\u@\h\[\033[00m\] \[\033[01;34m\]\w \$\[\033[00m\] '
 else
-    PS1='${debian_chroot:+($debian_chroot)}\u@\h:\w\$ '
+    PS1='${debian_chroot:+($debian_chroot)}\u@\h:\w$(__git_ps1)\$ '
 fi
 unset color_prompt force_color_prompt
 
@@ -134,16 +134,16 @@ if ! shopt -oq posix; then
   elif [ -f /etc/bash_completion ]; then
     . /etc/bash_completion
   fi
-fi
 
-# Safer. If expecting a completion to stop before the end so you can add *,
-# but it completes, and you're not paying attention...
-#
-# Yes I have.
-#
-compopt -o nospace rm > /dev/null 2>&1
+  # Safer. If expecting a completion to stop before the end so you can add *,
+  # but it completes, and you're not paying attention...
+  #
+  # Yes I have.
+  #
+  compopt -o nospace rm > /dev/null 2>&1
 
-# default Debian debsign completion is shit
-if [ -e /usr/share/bash-completion/completions/debsign ]; then
-   compopt -o dirnames debsign
+  # default Debian debsign completion is shit
+  if [ -e /usr/share/bash-completion/completions/debsign ]; then
+    __load_completion debsign && compopt -o dirnames debsign
+  fi
 fi
