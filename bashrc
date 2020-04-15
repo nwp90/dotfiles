@@ -10,10 +10,25 @@ export HGMERGE=/usr/bin/meld
 export LC_COLLATE=C
 
 # If not running interactively, don't do anything. Unless we've already done it.
-[ -z "$PS1" ] && return
+case $- in
+    *i*) ;;
+      *) return;;
+esac
+# Old way of detecting interactive
+#[ -z "$PS1" ] && return
+
 export VISUAL=~/bin/edit
 export EDITOR=${VISUAL}
 export ALTERNATE_EDITOR=emacs
+
+# Avoid "gpg: signing failed: Inappropriate ioctl for device" on `git tag -sf`
+# https://gist.github.com/repodevs/a18c7bb42b2ab293155aca889d447f1b
+export GPG_TTY=$(/usr/bin/tty)
+
+# Don't pop up passphrase dialog in console GUI if I'm using ssh...
+if [ -n "${SSH_CONNECTION}" ]; then
+    export PINENTRY_USER_DATA="USE_CURSES=1"
+fi
 
 # append to the history file, don't overwrite it
 shopt -s histappend
@@ -72,11 +87,11 @@ if [ -f /etc/profile.d/uoo_prompt.sh ]; then
 fi
 
 if [ "$color_prompt" = yes ]; then
-    PS1='${debian_chroot:+($debian_chroot)}\[\033[01;32m\]\u@\h\[\033[00m\]:\[\033[01;34m\]\w\[\033[00m\]\$ '
+    PS1='${debian_chroot:+($debian_chroot)}\[\033[01;32m\]\u@\h\[\033[00m\]:\[\033[01;34m\]\w\[\033[00m\]$(__git_ps1)\$ '
     # newer?
 	#PS1='${debian_chroot:+($debian_chroot)}\[\033[01;32m\]\u@\h\[\033[00m\] \[\033[01;34m\]\w \$\[\033[00m\] '
 else
-    PS1='${debian_chroot:+($debian_chroot)}\u@\h:\w\$ '
+    PS1='${debian_chroot:+($debian_chroot)}\u@\h:\w$(__git_ps1)\$ '
 fi
 unset color_prompt force_color_prompt
 
@@ -91,15 +106,6 @@ xterm*|rxvt*)
 esac
 
 PS1="${envprompt}${PS1}"
-
-# Alias definitions.
-# You may want to put all your additions into a separate file like
-# ~/.bash_aliases, instead of adding them here directly.
-# See /usr/share/doc/bash-doc/examples in the bash-doc package.
-
-if [ -f ~/.bash_aliases ]; then
-    . ~/.bash_aliases
-fi
 
 # enable color support of ls and also add handy aliases
 if [ "$TERM" != "dumb" ]  && [ -x /usr/bin/dircolors ]; then
@@ -118,6 +124,15 @@ fi
 #alias la='ls -A'
 #alias l='ls -CF'
 
+# Alias definitions.
+# You may want to put all your additions into a separate file like
+# ~/.bash_aliases, instead of adding them here directly.
+# See /usr/share/doc/bash-doc/examples in the bash-doc package.
+
+if [ -f ~/.bash_aliases ]; then
+    . ~/.bash_aliases
+fi
+
 # enable programmable completion features (you don't need to enable
 # this, if it's already enabled in /etc/bash.bashrc and /etc/profile
 # sources /etc/bash.bashrc).
@@ -127,16 +142,16 @@ if ! shopt -oq posix; then
   elif [ -f /etc/bash_completion ]; then
     . /etc/bash_completion
   fi
-fi
 
-# Safer. If expecting a completion to stop before the end so you can add *,
-# but it completes, and you're not paying attention...
-#
-# Yes I have.
-#
-compopt -o nospace rm > /dev/null 2>&1
+  # Safer. If expecting a completion to stop before the end so you can add *,
+  # but it completes, and you're not paying attention...
+  #
+  # Yes I have.
+  #
+  compopt -o nospace rm > /dev/null 2>&1
 
-# default Debian debsign completion is shit
-if [ -e /usr/share/bash-completion/completions/debsign ]; then
-   compopt -o dirnames debsign
+  # default Debian debsign completion is shit
+  if [ -e /usr/share/bash-completion/completions/debsign ]; then
+    __load_completion debsign && compopt -o dirnames debsign
+  fi
 fi
