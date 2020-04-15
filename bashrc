@@ -87,13 +87,16 @@ if [ -f /etc/profile.d/uoo_prompt.sh ]; then
 fi
 
 # Make sure __git_ps1 is available
-if [ "$(type -t __git_ps1)" != "function" ]; then
+
+__load_git_prompt() {
   # for RHEL; debian does it automatically for now
   # (but will use /usr/lib/git-core/git-sh-prompt when it doesn't)
   if [[ -e /usr/share/git-core/contrib/completion/git-prompt.sh ]]; then
      . /usr/share/git-core/contrib/completion/git-prompt.sh
   fi
-fi
+}
+
+declare -F __git_ps1 > /dev/null || __load_git_prompt
 
 if [ "$color_prompt" = yes ]; then
     PS1='${debian_chroot:+($debian_chroot)}\[\033[01;32m\]\u@\h\[\033[00m\]:\[\033[01;34m\]\w\[\033[00m\]$(__git_ps1)\$ '
