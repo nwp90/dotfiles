@@ -2,6 +2,13 @@
 # see /usr/share/doc/bash/examples/startup-files (in the package bash-doc)
 # for examples
 
+# per-host settings
+case $(/usr/bin/hostname -s) in
+  inf-*)
+    export EMACS_NOELPA=1
+    ;;
+esac
+
 export DEBEMAIL=nwp@debian.org
 export DEBFULLNAME="Nick Phillips"
 export HGMERGE=/usr/bin/meld

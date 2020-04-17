@@ -8,22 +8,27 @@
 (if (not (eq t (server-running-p server-name)))
     (server-start))
 
-(require 'package)
-(let* ((no-ssl (and (memq system-type '(windows-nt ms-dos))
-                    (not (gnutls-available-p))))
-       (proto (if no-ssl "http" "https")))
-  ;; Comment/uncomment these two lines to enable/disable MELPA and MELPA Stable as desired
-  ;(add-to-list 'package-archives (cons "melpa" (concat proto "://melpa.org/packages/")) t)
-  (add-to-list 'package-archives (cons "melpa-stable" (concat proto "://stable.melpa.org/packages/")) t)
-  ;(add-to-list 'package-archives (cons "marmalade" (concat proto "://marmalade-repo.org/packages/")) t)
-)
-;(add-to-list 'package-archives '("melpa" . "http://melpa.org/packages/") t)
-;(add-to-list 'package-archives '("melpa-stable" . "http://stable.melpa.org/packages/") t)
-;(add-to-list 'package-archives '("marmalade" . "http://marmalade-repo.org/packages/") t)
-(package-initialize)
 
-;(when (not package-archive-contents)
-;  (package-refresh-contents))
+(require 'package)
+(let* ((no-elpa (not (equal (getenv "EMACS_NOELPA") ""))))
+  (if no-elpa
+      (message "NO ELPA")
+    (
+     (let* ((no-ssl (and (memq system-type '(windows-nt ms-dos))
+			 (not (gnutls-available-p))))
+	    (proto (if no-ssl "http" "https")))
+       ;; Comment/uncomment these two lines to enable/disable MELPA and MELPA Stable as desired
+       ;;(add-to-list 'package-archives (cons "melpa" (concat proto "://melpa.org/packages/")) t)
+       (add-to-list 'package-archives (cons "melpa-stable" (concat proto "://stable.melpa.org/packages/")) t)
+       ;;(add-to-list 'package-archives (cons "marmalade" (concat proto "://marmalade-repo.org/packages/")) t)
+       )
+     ;;(add-to-list 'package-archives '("melpa" . "http://melpa.org/packages/") t)
+     ;;(add-to-list 'package-archives '("melpa-stable" . "http://stable.melpa.org/packages/") t)
+     ;;(add-to-list 'package-archives '("marmalade" . "http://marmalade-repo.org/packages/") t)
+     (package-initialize)
+
+     (when (not package-archive-contents)
+       (package-refresh-contents))
 
 ;;; stuff to check out:
 ;; company-mode
@@ -35,22 +40,23 @@
 ;                       yaml-mode
 ;                       sass-mode
 
-;; Packages
-(defvar my-packages '(flycheck
-		      flycheck-color-mode-line
-                      markdown-mode
-                      nginx-mode
-		      pony-mode
-                      yaml-mode
-                      sass-mode
-		      cython-mode
-		      ;yafolding
-                      )
-  "A list of packages to ensure are installed at launch.")
+     ;; Packages
+     (defvar my-packages '(flycheck
+			   flycheck-color-mode-line
+			   markdown-mode
+			   nginx-mode
+			   pony-mode
+			   yaml-mode
+			   sass-mode
+			   cython-mode
+			   ;;yafolding
+			   )
+       "A list of packages to ensure are installed at launch.")
 
-(dolist (p my-packages)
-  (when (not (package-installed-p p))
-    (package-install p)))
+     (dolist (p my-packages)
+       (when (not (package-installed-p p))
+	 (package-install p)))
+     )))
 
 (add-to-list 'load-path "~/.emacs.d/loadable")
 
@@ -218,15 +224,17 @@
 
 
 ;; Flycheck
-(require 'flycheck)
-;;(setq flycheck-pylintrc "~/.pylintrc")
-(require 'flycheck-color-mode-line)
-(setq-default flycheck-emacs-lisp-load-path load-path)
+(if (not (require 'flycheck nil t))
+    (message "flycheck package not available")
+  
+  ;;(setq flycheck-pylintrc "~/.pylintrc")
+  (require 'flycheck-color-mode-line)
+  (setq-default flycheck-emacs-lisp-load-path load-path)
 
-(add-hook 'after-init-hook #'global-flycheck-mode)
-(eval-after-load "flycheck"
-  '(add-hook 'flycheck-mode-hook 'flycheck-color-mode-line-mode))
-
+  (add-hook 'after-init-hook #'global-flycheck-mode)
+  (eval-after-load "flycheck"
+    '(add-hook 'flycheck-mode-hook 'flycheck-color-mode-line-mode))
+)
 ;; ;; For more on flymake (with other languages etc.),
 ;; ;; see http://www.emacswiki.org/emacs/FlyMake
 
@@ -265,6 +273,7 @@
 
 ;; ;; see http://github.com/purcell/emacs.d/blob/master/site-lisp/flymake-ruby/flymake-ruby.el
 ;; ;;
+
 
 ;; Not available in Ubuntu eoan - install elpa-color-theme-modern when focal
 ;; arrives
@@ -393,8 +402,9 @@
 (setq-default sh-basic-offset 2)
 (setq-default sh-indentation 2)
 
-;; nginx
-(require 'nginx-mode)
+;; nginx - may or may not be available
+(ignore-errors
+  (require 'nginx-mode))
 
 ;; Seems this is the actual culprit for python mode slowness
 ;;(add-hook 'prog-mode-hook 'rainbow-delimiters-mode)
