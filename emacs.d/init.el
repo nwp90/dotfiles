@@ -78,8 +78,6 @@
 
 (add-to-list 'auto-mode-alist '("\\.ts$" . js-mode))
 (add-to-list 'auto-mode-alist '("\\.js$" . js-mode))
-(custom-set-variables
- '(js-indent-level 2))
 
 ;; ; directory node comes from first directory...
 
@@ -400,7 +398,12 @@
 
 ;; shell scripts
 (setq-default sh-basic-offset 2)
-(setq-default sh-indentation 2)
+;; Use C-c >
+;;(setq sh-learn-basic-offset "always")
+;; obsolete but still present in ubuntu version
+;;(add-hook 'sh-set-shell-hook 'sh-learn-buffer-indent)
+;; newer way, but damn thing is interactive :(
+;;(add-hook 'sh-set-shell-hook 'smie-config-guess)
 
 ;; nginx - may or may not be available
 (ignore-errors
@@ -414,20 +417,22 @@
   (add-hook 'find-file-hooks 'hg-find-file-hook))
 
 (custom-set-variables
-  ;; custom-set-variables was added by Custom.
-  ;; If you edit it by hand, you could mess it up, so be careful.
-  ;; Your init file should contain only one such instance.
-  ;; If there is more than one, they won't work right.
+ ;; custom-set-variables was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
  '(column-number-mode t)
- '(line-move-visual nil)
  '(inhibit-startup-screen t)
+ '(js-indent-level 2)
+ '(line-move-visual nil)
  '(mouse-wheel-scroll-amount (quote (1 ((shift) . 3) ((alt)) ((control)))))
+ '(safe-local-variable-values (quote ((sh-basic-indent . 4))))
  '(scroll-bar-mode (quote right)))
 (custom-set-faces
-  ;; custom-set-faces was added by Custom.
-  ;; If you edit it by hand, you could mess it up, so be careful.
-  ;; Your init file should contain only one such instance.
-  ;; If there is more than one, they won't work right.
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
  )
 
 ;; End:
