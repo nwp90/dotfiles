@@ -12,5 +12,5 @@ alias ls='ls --color=auto'
 # For systems where I'm normally not at an X head
 alias nautilus='nautilus --no-desktop --browser'
 
-alias debsign='debsign -k07EDB79A'
+alias debsign='debsign -k462EC57807EDB79A'
 alias venv=virtualenv
