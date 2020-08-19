@@ -15,4 +15,8 @@ if [ -d ~/bin ] ; then
     PATH=~/bin:"${PATH}"
 fi
 
+PATH=~/go/bin:/usr/local/go/bin:${PATH}
+export GOBIN=~/go/bin
+
+
 export XAUTHORITY=~/.Xauthority

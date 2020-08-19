@@ -194,6 +194,7 @@
 (setq line-number-mode t)
 (setq column-number-mode t)
 (setq-default ispell-program-name "aspell")
+(setq-default indent-tabs-mode nil)
 
 (add-hook `cperl-mode-hook `turn-on-font-lock)
 (add-hook `html-mode-hook `turn-on-font-lock)
