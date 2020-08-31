@@ -3,7 +3,7 @@
 # for examples
 
 # per-host settings
-case $(/usr/bin/hostname -s) in
+case $(/bin/hostname -s) in
   inf-*)
     export EMACS_NOELPA=1
     ;;
