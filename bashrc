@@ -88,7 +88,10 @@ if [ -n "$force_color_prompt" ]; then
 fi
 
 envprompt=""
-if [ -f /etc/profile.d/uoo_prompt.sh ]; then
+if [ -f /etc/profile.uoo ]; then
+    . /etc/profile.uoo
+    envprompt=$(environment_prompt_fragment)
+elif [ -f /etc/profile.d/uoo_prompt.sh ]; then
     . /etc/profile.d/uoo_prompt.sh
     envprompt=$(environment_prompt_fragment)
 fi
