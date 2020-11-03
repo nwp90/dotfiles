@@ -18,13 +18,14 @@ users = kit
 # This causes an exception on push. Heaven knows why.
 #activity = ~/.hgext/activity.py
 # see http://mercurial.selenic.com/wiki/QctExtension?highlight=%28plugin%29
-qct =
+#qct =
 git =
 
-collapse = ~/.hgext/collapse.py
-histedit = ~/.hgext/histedit
+#collapse = ~/.hgext/collapse.py
+#histedit = ~/.hgext/histedit
 #crecord = ~/.hgext/crecord/crecord
 convert =
+strip =
 
 [color]
 status.modified = magenta bold

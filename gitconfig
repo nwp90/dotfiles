@@ -1,3 +1,6 @@
 [user]
 	email = nwp@zepler.net
 	name = "Nick Phillips"
+	signingkey = D1BEE3B689A5DA01EE9D623F09731B059A483109
+[gpg]
+	program = gpg2
