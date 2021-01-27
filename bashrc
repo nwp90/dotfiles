@@ -129,11 +129,14 @@ esac
 
 if [ -n "${VIRTUAL_ENV}" ]; then
     venvprompt="(`basename \"$VIRTUAL_ENV\"`)"
+    if [ -n "${envprompt}" ]; then
+        venvprompt = " ${venvprompt}"
+    fi
 else
     venvprompt=""
 fi
 
-PS1="${envprompt} ${venvprompt}${PS1}"
+PS1="${envprompt}${venvprompt}${PS1}"
 
 # enable color support of ls and also add handy aliases
 if [ "$TERM" != "dumb" ]  && [ -x /usr/bin/dircolors ]; then
