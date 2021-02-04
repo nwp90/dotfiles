@@ -130,7 +130,7 @@ esac
 if [ -n "${VIRTUAL_ENV}" ]; then
     venvprompt="(`basename \"$VIRTUAL_ENV\"`)"
     if [ -n "${envprompt}" ]; then
-        venvprompt = " ${venvprompt}"
+        venvprompt=" ${venvprompt}"
     fi
 else
     venvprompt=""
