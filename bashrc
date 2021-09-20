@@ -128,15 +128,16 @@ xterm*|rxvt*)
 esac
 
 if [ -n "${VIRTUAL_ENV}" ]; then
-    venvprompt="(`basename \"$VIRTUAL_ENV\"`)"
-    if [ -n "${envprompt}" ]; then
-        venvprompt = " ${venvprompt}"
-    fi
+    venvprompt="${envprompt} (`basename \"$VIRTUAL_ENV\"`)"
 else
     venvprompt=""
 fi
 
-PS1="${envprompt}${venvprompt}${PS1}"
+if [ -n "${envprompt}" ]; then
+    PS1="${envprompt} ${venvprompt}${PS1}"
+else
+    PS1="${venvprompt}${PS1}"
+fi
 
 # enable color support of ls and also add handy aliases
 if [ "$TERM" != "dumb" ]  && [ -x /usr/bin/dircolors ]; then
@@ -162,6 +163,10 @@ fi
 
 if [ -f ~/.bash_aliases ]; then
     . ~/.bash_aliases
+fi
+
+if [ -f ~/.fontawesome-auth ]; then
+    . ~/.fontawesome-auth
 fi
 
 # enable programmable completion features (you don't need to enable
