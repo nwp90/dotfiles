@@ -128,7 +128,10 @@ xterm*|rxvt*)
 esac
 
 if [ -n "${VIRTUAL_ENV}" ]; then
-    venvprompt="${envprompt} (`basename \"$VIRTUAL_ENV\"`)"
+    venvprompt="(`basename \"$VIRTUAL_ENV\"`)"
+    if [ -n "${envprompt}" ]; then
+        venvprompt=" ${venvprompt}"
+    fi
 else
     venvprompt=""
 fi
