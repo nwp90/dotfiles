@@ -8,27 +8,7 @@
 (if (not (eq t (server-running-p server-name)))
     (server-start))
 
-
 (require 'package)
-(let* ((no-elpa (not (equal (getenv "EMACS_NOELPA") ""))))
-  (if no-elpa
-      (message "NO ELPA")
-    (
-     (let* ((no-ssl (and (memq system-type '(windows-nt ms-dos))
-			 (not (gnutls-available-p))))
-	    (proto (if no-ssl "http" "https")))
-       ;; Comment/uncomment these two lines to enable/disable MELPA and MELPA Stable as desired
-       ;;(add-to-list 'package-archives (cons "melpa" (concat proto "://melpa.org/packages/")) t)
-       (add-to-list 'package-archives (cons "melpa-stable" (concat proto "://stable.melpa.org/packages/")) t)
-       ;;(add-to-list 'package-archives (cons "marmalade" (concat proto "://marmalade-repo.org/packages/")) t)
-       )
-     ;;(add-to-list 'package-archives '("melpa" . "http://melpa.org/packages/") t)
-     ;;(add-to-list 'package-archives '("melpa-stable" . "http://stable.melpa.org/packages/") t)
-     ;;(add-to-list 'package-archives '("marmalade" . "http://marmalade-repo.org/packages/") t)
-     (package-initialize)
-
-     (when (not package-archive-contents)
-       (package-refresh-contents))
 
 ;;; stuff to check out:
 ;; company-mode
@@ -39,24 +19,51 @@
 
 ;                       yaml-mode
 ;                       sass-mode
+(defun my/install-packages ()
+  "Install my desired packages from ELPA/MELPA."
+  ;; Packages
+  (defvar my-packages
+    '(flycheck
+      flycheck-color-mode-line
+      markdown-mode
+      nginx-mode
+      pony-mode
+      yaml-mode
+      sass-mode
+      cython-mode
+      editorconfig
+      ;;yafolding
+      )
+    "A list of packages to ensure are installed at launch.")
+  (dolist (p my-packages)
+    (when (not (package-installed-p p))
+      (package-install p))))
 
-     ;; Packages
-     (defvar my-packages '(flycheck
-			   flycheck-color-mode-line
-			   markdown-mode
-			   nginx-mode
-			   pony-mode
-			   yaml-mode
-			   sass-mode
-			   cython-mode
-			   ;;yafolding
-			   )
-       "A list of packages to ensure are installed at launch.")
+(defun my/configure-repositories ()
+  "Configure desired ELPA/MELPA repos."
+  (let* ((no-ssl (and (memq system-type '(windows-nt ms-dos))
+		      (not (gnutls-available-p))))
+	 (proto (if no-ssl "http" "https")))
+    (message "Configuring ELPA/MELPA repos...")
+    (message "Adding melpa-stable with %s" proto)
+    (add-to-list 'package-archives (cons "melpa" (concat proto "://melpa.org/packages/")) t)
+    ;;(add-to-list 'package-archives (cons "melpa-stable" (concat proto "://stable.melpa.org/packages/")) t)
+    ;;(add-to-list 'package-archives (cons "marmalade" (concat proto "://marmalade-repo.org/packages/")) t)
+    (message "Done setting up repositories.")))
 
-     (dolist (p my-packages)
-       (when (not (package-installed-p p))
-	 (package-install p)))
-     )))
+(require 'package)
+(let* ((no-elpa (not (equal (getenv "EMACS_NOELPA") nil))))
+  (if no-elpa
+      (message "NO ELPA")
+    (progn
+      (my/configure-repositories)
+      (package-initialize)
+      (when (not package-archive-contents)
+        (package-refresh-contents))
+      (my/install-packages)
+      (message "Packages installed"))))
+
+(require 'use-package)
 
 (add-to-list 'load-path "~/.emacs.d/loadable")
 
@@ -221,6 +228,15 @@
 ;; 'yes' to kill python process on exit
 ;; (add-hook 'python-mode-hook 'turn-on-eldoc-mode)
 
+;; (if (not (require 'editorconfig nil t))
+;;     (message "editorconfig package not available")
+;;   (editorconfig-mode 1))
+
+(use-package editorconfig
+    :ensure t
+    :diminish editorconfig-mode
+    :init
+    (editorconfig-mode))
 
 ;; Flycheck
 (if (not (require 'flycheck nil t))
@@ -426,9 +442,11 @@
  '(inhibit-startup-screen t)
  '(js-indent-level 2)
  '(line-move-visual nil)
- '(mouse-wheel-scroll-amount (quote (1 ((shift) . 3) ((alt)) ((control)))))
- '(safe-local-variable-values (quote ((sh-basic-indent . 4))))
- '(scroll-bar-mode (quote right)))
+ '(mouse-wheel-scroll-amount '(1 ((shift) . 3) ((alt)) ((control))))
+ '(package-selected-packages
+   '(tabbar session pod-mode pip-requirements php-mode muttrc-mode mutt-alias jinja2-mode initsplit htmlize graphviz-dot-mode go-mode gitignore-mode gitconfig-mode gitattributes-mode git-modes folding eproject diminish csv-mode company color-theme-modern browse-kill-ring boxquote bm bar-cursor apache-mode yaml-mode sass-mode rainbow-delimiters pony-mode nginx-mode markdown-mode js2-mode haskell-mode flycheck-color-mode-line cython-mode clojure-test-mode))
+ '(safe-local-variable-values '((sh-basic-indent . 4)))
+ '(scroll-bar-mode 'right))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
