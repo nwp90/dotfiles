@@ -211,10 +211,13 @@
 (setq-default ispell-program-name "aspell")
 (setq-default indent-tabs-mode nil)
 
-(add-hook `cperl-mode-hook `turn-on-font-lock)
-(add-hook `html-mode-hook `turn-on-font-lock)
-(add-hook `python-mode-hook `turn-on-font-lock)
-(add-hook `python-mode-hook `(lambda() (modify-syntax-entry ?_ "_" python-mode-syntax-table)))
+(add-hook 'cperl-mode-hook 'turn-on-font-lock)
+(add-hook 'html-mode-hook 'turn-on-font-lock)
+(add-hook 'python-mode-hook 'turn-on-font-lock)
+(add-hook 'python-mode-hook '(lambda() (modify-syntax-entry ?_ "_" python-mode-syntax-table)))
+(add-hook 'php-mode-hook
+          (lambda ()
+            (c-set-offset 'case-label '+)))
 
 ;; (require 'un-define)
 ;; (set-default-coding-systems 'utf-8)
@@ -444,7 +447,7 @@
 
 (when (locate-library "mercurial")
   (autoload 'hg-find-file-hook "mercurial")
-  (add-hook 'find-file-hooks 'hg-find-file-hook))
+  (add-hook 'find-file-hook 'hg-find-file-hook))
 
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
