@@ -32,6 +32,7 @@
       sass-mode
       cython-mode
       editorconfig
+      diminish
       ;;yafolding
       )
     "A list of packages to ensure are installed at launch.")
@@ -51,6 +52,8 @@
     ;;(add-to-list 'package-archives (cons "marmalade" (concat proto "://marmalade-repo.org/packages/")) t)
     (message "Done setting up repositories.")))
 
+(require 'diminish)
+
 (require 'package)
 (let* ((no-elpa (not (equal (getenv "EMACS_NOELPA") nil))))
   (if no-elpa
@@ -63,21 +66,21 @@
       (my/install-packages)
       (message "Packages installed"))))
 
-(require 'use-package)
+(message "ELPA set up, moving on...")
 
 (add-to-list 'load-path "~/.emacs.d/loadable")
-
-(global-set-key [(control x)(control c)] 'server-edit)
-(global-set-key [(control x)(meta c)] 'save-buffers-kill-emacs)
 
 ;; Slooooooow...
 ;;(add-hook 'prog-mode-hook 'rainbow-delimiters-mode)
 
+(message "Setting up for PHP editing...")
 (autoload 'php-mode "php-mode" "PHP editing mode" t)
 (add-to-list 'auto-mode-alist '("\\.php3\\'" . php-mode))
 (add-to-list 'auto-mode-alist '("\\.php4\\'" . php-mode))
 (add-to-list 'auto-mode-alist '("\\.php\\'" . php-mode))
 
+
+(message "Setting up for JS editing...")
 ;; (add-to-list 'auto-mode-alist '("\\.js$" . js2-mode))
 ;; (custom-set-variables
 ;;  '(js2-basic-offset 2)
@@ -102,6 +105,11 @@
   (interactive)
   (set-buffer-modified-p
    (not (buffer-modified-p))))
+
+(message "Setting up keybindings...")
+
+(global-set-key [(control x)(control c)] 'server-edit)
+(global-set-key [(control x)(meta c)] 'save-buffers-kill-emacs)
 
 ;; (global-set-key [(control x)(f)] 'fill-paragraph)
 ;; (global-set-key [(control c)(l)] 'goto-line)
@@ -228,28 +236,33 @@
 ;; 'yes' to kill python process on exit
 ;; (add-hook 'python-mode-hook 'turn-on-eldoc-mode)
 
-;; (if (not (require 'editorconfig nil t))
-;;     (message "editorconfig package not available")
-;;   (editorconfig-mode 1))
+(if (not (require 'editorconfig nil t))
+    (message "editorconfig package not available")
+  (editorconfig-mode 1))
 
-(use-package editorconfig
-    :ensure t
-    :diminish editorconfig-mode
-    :init
-    (editorconfig-mode))
+(eval-after-load "editorconfig" '(diminish 'editorconfig-mode))
+(eval-after-load "abbrev" '(diminish 'abbrev-mode))
+
+;; (use-package editorconfig
+;;     :ensure t
+;;     :diminish editorconfig-mode
+;;     :init
+;;     (editorconfig-mode))
 
 ;; Flycheck
 (if (not (require 'flycheck nil t))
     (message "flycheck package not available")
   
   ;;(setq flycheck-pylintrc "~/.pylintrc")
+  (message "Enabling flycheck with flycheck-color-mode-line")
   (require 'flycheck-color-mode-line)
   (setq-default flycheck-emacs-lisp-load-path load-path)
 
+  (message "Setting after-init-hook for global-flycheck-mode")
   (add-hook 'after-init-hook #'global-flycheck-mode)
   (eval-after-load "flycheck"
-    '(add-hook 'flycheck-mode-hook 'flycheck-color-mode-line-mode))
-)
+    '(add-hook 'flycheck-mode-hook 'flycheck-color-mode-line-mode)))
+
 ;; ;; For more on flymake (with other languages etc.),
 ;; ;; see http://www.emacswiki.org/emacs/FlyMake
 
