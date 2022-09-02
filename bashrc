@@ -9,6 +9,14 @@ case $(/bin/hostname -s) in
     ;;
 esac
 
+# set PATH so it includes user's private bins if they exist
+if [ -d "$HOME/.local/bin" ] ; then
+    PATH="$HOME/.local/bin:$PATH"
+fi
+if [ -d "$HOME/bin" ] ; then
+    PATH="$HOME/bin:$PATH"
+fi
+
 export DEBEMAIL=nwp@debian.org
 export DEBFULLNAME="Nick Phillips"
 export HGMERGE=/usr/bin/meld
@@ -153,6 +161,9 @@ if [ "$TERM" != "dumb" ]  && [ -x /usr/bin/dircolors ]; then
     #alias fgrep='fgrep --color=auto'
     #alias egrep='egrep --color=auto'
 fi
+
+# colored GCC warnings and errors
+#export GCC_COLORS='error=01;31:warning=01;35:note=01;36:caret=01;32:locus=01:quote=01'
 
 # some more ls aliases
 #alias ll='ls -l'
