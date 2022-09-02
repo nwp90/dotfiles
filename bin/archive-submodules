@@ -1,0 +1,25 @@
+#!/bin/bash
+
+prefix=$1
+filename=$(/usr/bin/realpath -- $2)
+
+[ -z "${prefix}" ] && {
+  echo "First argument (prefix to use) must be specified"
+  exit 1
+}
+
+[ -z "${filename}" ] && {
+  echo "Second argument (tar filename to use) must be specified"
+  exit 1
+}
+
+prefix=${prefix%/}
+#set -x
+git archive --format=tar --prefix=${prefix}/ HEAD > ${filename}
+
+# Can't use <() directly as git uses sh from path (which might be dash).
+# Can't use <() via helper as it fills buffer and then dies.
+# Can just concatenate tar files & use -i on unpack.
+git submodule foreach --recursive "git archive --format=tar --prefix=${prefix}/\$sm_path/ HEAD >> ${filename}"
+#set +x
+echo "WARNING: make sure you use -i option to tar when unpacking!"
