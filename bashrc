@@ -206,3 +206,11 @@ if ! shopt -oq posix; then
     __load_completion debsign && compopt -o dirnames debsign
   fi
 fi
+
+# Doesn't work when ssh versions out of sync between win & wsl
+#[ -e "${HOME}/bin/win-ssh-agent.sh" ] && . "${HOME}/bin/win-ssh-agent.sh"
+
+if /usr/bin/uname -r | /bin/grep -q microsoft ; then
+    echo "On WSL, sourcing startup..." >&2
+    [ -e ~/bin/start.sh ] && . ~/bin/start.sh
+fi
