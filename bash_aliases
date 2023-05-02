@@ -14,3 +14,6 @@ alias nautilus='nautilus --no-desktop --browser'
 
 alias debsign='debsign -k462EC57807EDB79A'
 alias venv=virtualenv
+
+alias kubectl=~/.minikube/cache/linux/v1.20.7/kubectl
+alias kc=kubectl
