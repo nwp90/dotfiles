@@ -4,3 +4,7 @@
 	signingkey = D1BEE3B689A5DA01EE9D623F09731B059A483109
 [gpg]
 	program = gpg2
+
+# Would be great if it didn't keep needing terminal resets
+#[core]
+#	pager = git-split-diffs --color | less -RFX
