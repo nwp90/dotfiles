@@ -1,13 +1,22 @@
-# ~/.bashrc: executed by bash(1) for non-login shells.
+# ~/.bashrc: -*- shell-script -*- executed by bash(1) for non-login shells.
 # see /usr/share/doc/bash/examples/startup-files (in the package bash-doc)
 # for examples
 
 # per-host settings
 case $(/bin/hostname -s) in
-    inf-*)
+    inf-*) ;&
+    its-*)
         export EMACS_NOELPA=1
         ;;
 esac
+
+# set PATH so it includes user's private bins if they exist
+if [ -d "$HOME/.local/bin" ] ; then
+    PATH="$HOME/.local/bin:$PATH"
+fi
+if [ -d "$HOME/bin" ] ; then
+    PATH="$HOME/bin:$PATH"
+fi
 
 export DEBEMAIL=nwp@debian.org
 export DEBFULLNAME="Nick Phillips"
@@ -130,13 +139,17 @@ esac
 if [ -n "${VIRTUAL_ENV}" ]; then
     venvprompt="(`basename \"$VIRTUAL_ENV\"`)"
     if [ -n "${envprompt}" ]; then
-        venvprompt = " ${venvprompt}"
+        venvprompt=" ${venvprompt}"
     fi
 else
     venvprompt=""
 fi
 
-PS1="${envprompt}${venvprompt}${PS1}"
+if [ -n "${envprompt}" ]; then
+    PS1="${envprompt} ${venvprompt}${PS1}"
+else
+    PS1="${venvprompt}${PS1}"
+fi
 
 # enable color support of ls and also add handy aliases
 if [ "$TERM" != "dumb" ]  && [ -x /usr/bin/dircolors ]; then
@@ -149,6 +162,9 @@ if [ "$TERM" != "dumb" ]  && [ -x /usr/bin/dircolors ]; then
     #alias fgrep='fgrep --color=auto'
     #alias egrep='egrep --color=auto'
 fi
+
+# colored GCC warnings and errors
+#export GCC_COLORS='error=01;31:warning=01;35:note=01;36:caret=01;32:locus=01:quote=01'
 
 # some more ls aliases
 #alias ll='ls -l'
@@ -189,4 +205,12 @@ if ! shopt -oq posix; then
   if [ -e /usr/share/bash-completion/completions/debsign ]; then
     __load_completion debsign && compopt -o dirnames debsign
   fi
+fi
+
+# Doesn't work when ssh versions out of sync between win & wsl
+#[ -e "${HOME}/bin/win-ssh-agent.sh" ] && . "${HOME}/bin/win-ssh-agent.sh"
+
+if /usr/bin/uname -r | /bin/grep -q microsoft ; then
+    echo "On WSL, sourcing startup..." >&2
+    [ -e ~/bin/start.sh ] && . ~/bin/start.sh
 fi
