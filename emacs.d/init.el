@@ -221,6 +221,18 @@
 ;; 'yes' to kill python process on exit
 ;; (add-hook 'python-mode-hook 'turn-on-eldoc-mode)
 
+(if (not (require 'yaml-mode nil t))
+    ;; no yaml
+    (message "yaml-mode package not available")
+  ;; yaml
+  (add-to-list 'auto-mode-alist '("\\.yml\\'" . yaml-mode))
+  (add-to-list 'auto-mode-alist '("\\.yaml\\'" . yaml-mode))
+  ;; Unlike python-mode, this mode follows the Emacs convention of not
+  ;; binding the ENTER key to `newline-and-indent'.  To get this
+  ;; behavior, add the key definition to `yaml-mode-hook':
+  (add-hook 'yaml-mode-hook
+            '(lambda ()
+               (define-key yaml-mode-map "\C-m" 'newline-and-indent))))
 
 ;; Flycheck
 (if (not (require 'flycheck nil t))
