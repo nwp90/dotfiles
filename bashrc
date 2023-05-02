@@ -4,9 +4,9 @@
 
 # per-host settings
 case $(/bin/hostname -s) in
-  inf-*)
-    export EMACS_NOELPA=1
-    ;;
+    inf-*)
+        export EMACS_NOELPA=1
+        ;;
 esac
 
 export DEBEMAIL=nwp@debian.org
@@ -162,6 +162,10 @@ fi
 
 if [ -f ~/.bash_aliases ]; then
     . ~/.bash_aliases
+fi
+
+if [ -f ~/.fontawesome-auth ]; then
+    . ~/.fontawesome-auth
 fi
 
 # enable programmable completion features (you don't need to enable
