@@ -27,7 +27,7 @@
       flycheck-color-mode-line
       markdown-mode
       nginx-mode
-      pony-mode
+      ;;pony-mode
       yaml-mode
       sass-mode
       cython-mode
@@ -214,9 +214,9 @@
 (add-hook 'cperl-mode-hook 'turn-on-font-lock)
 (add-hook 'html-mode-hook 'turn-on-font-lock)
 (add-hook 'python-mode-hook 'turn-on-font-lock)
-(add-hook 'python-mode-hook '(lambda() (modify-syntax-entry ?_ "_" python-mode-syntax-table)))
+(add-hook 'python-mode-hook #'(lambda() (modify-syntax-entry ?_ "_" python-mode-syntax-table)))
 (add-hook 'php-mode-hook
-          (lambda ()
+          #'(lambda ()
             (c-set-offset 'case-label '+)))
 
 ;; (require 'un-define)
@@ -249,7 +249,7 @@
   ;; binding the ENTER key to `newline-and-indent'.  To get this
   ;; behavior, add the key definition to `yaml-mode-hook':
   (add-hook 'yaml-mode-hook
-            '(lambda ()
+            #'(lambda ()
                (define-key yaml-mode-map "\C-m" 'newline-and-indent))))
 
 (if (not (require 'editorconfig nil t))
@@ -277,8 +277,35 @@
   (message "Setting after-init-hook for global-flycheck-mode")
   (add-hook 'after-init-hook #'global-flycheck-mode)
   (eval-after-load "flycheck"
-    '(add-hook 'flycheck-mode-hook 'flycheck-color-mode-line-mode)))
+    '(add-hook 'flycheck-mode-hook 'flycheck-color-mode-line-mode))
 
+  ;; From https://github.com/flycheck/flycheck/issues/1974#issuecomment-1343495202
+  (flycheck-define-checker python-ruff
+    "A Python syntax and style checker using the ruff utility.
+To override the path to the ruff executable, set
+`flycheck-python-ruff-executable'.
+See URL `http://pypi.python.org/pypi/ruff'."
+    :command ("ruff"
+              "--format=text"
+              (eval (when buffer-file-name
+                      (concat "--stdin-filename=" buffer-file-name)))
+              "-")
+    :standard-input t
+    :error-filter (lambda (errors)
+                    (let ((errors (flycheck-sanitize-errors errors)))
+                      (seq-map #'flycheck-flake8-fix-error-level errors)))
+    :error-patterns
+    ((warning line-start
+              (file-name) ":" line ":" (optional column ":") " "
+              (id (one-or-more (any alpha)) (one-or-more digit)) " "
+              (message (one-or-more not-newline))
+              line-end))
+    :modes python-mode)
+
+  (add-hook `python-mode-hook
+            #'(lambda ()
+                (setq-local flycheck-checker `python-ruff)))
+)
 ;; ;; For more on flymake (with other languages etc.),
 ;; ;; see http://www.emacswiki.org/emacs/FlyMake
 
@@ -407,15 +434,15 @@
 
 ;;; bind RET to py-newline-and-indent
 (add-hook 'python-mode-hook
-	  '(lambda ()
-	     (define-key py-mode-map "\C-m" 'newline-and-indent)))
+	  #'(lambda ()
+	     (define-key python-mode-map "\C-m" 'newline-and-indent)))
 
 ;;; Electric Pairs
 ;; consider skeleton-pair-insert-maybe, see http://www.emacswiki.org/emacs/AutoPairs
 (add-hook 'python-mode-hook 'electric-pair-mode)
 
 ;; No tabs in Python!
-(add-hook 'python-mode-hook '(lambda () (setq indent-tabs-mode nil)))
+(add-hook 'python-mode-hook #'(lambda () (setq indent-tabs-mode nil)))
 
 ; Don't edit python bytecode
 (add-to-list 'completion-ignored-extensions ".pyc")
@@ -461,6 +488,7 @@
 (when (locate-library "mercurial")
   (autoload 'hg-find-file-hook "mercurial")
   (add-hook 'find-file-hook 'hg-find-file-hook))
+  ;;(add-hook 'find-file-hooks 'hg-find-file-hook))
 
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
