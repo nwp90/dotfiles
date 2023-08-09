@@ -17,6 +17,17 @@ fi
 if [ -d "$HOME/bin" ] ; then
     PATH="$HOME/bin:$PATH"
 fi
+if [ -d ~/go ]; then
+    PATH=~/go/bin:/usr/local/go/bin:${PATH}
+    export GOBIN=~/go/bin
+fi
+if [ -f ~/.cargo/env ]; then
+    . ~/.cargo/env
+fi
+if [ -d ~/.rye ]; then
+    . ~/.rye/env
+fi
+
 
 export DEBEMAIL=nwp@debian.org
 export DEBFULLNAME="Nick Phillips"
@@ -24,6 +35,13 @@ export HGMERGE=/usr/bin/meld
 #export XAUTHORITY=${HOME}/.Xauthority
 # The only one that makes sense
 export LC_COLLATE=C
+
+# Grrr... see https://github.com/oneapi-src/oneVPL/issues/56
+# and then https://github.com/oneapi-src/oneAPI-spec/issues/418
+export ONEVPL_SEARCH_PATH=/opt/intel/oneapi/vpl/latest/lib
+
+# Because Grrr....
+export REQUESTS_CA_BUNDLE=/etc/ssl/certs/ca-certificates.crt
 
 # If not running interactively, don't do anything. Unless we've already done it.
 case $- in
@@ -56,8 +74,8 @@ shopt -s histappend
 #export HISTCONTROL=ignoreboth
 #export HISTCONTROL=ignoredups
 export HISTCONTROL=ignorespace
-export HISTFILESIZE=5000
-export HISTSIZE=5000
+export HISTFILESIZE=15000
+export HISTSIZE=15000
 
 # check the window size after each command and, if necessary,
 # update the values of LINES and COLUMNS.
