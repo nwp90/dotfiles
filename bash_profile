@@ -10,13 +10,19 @@ if [ -f ~/.bashrc ]; then
     . ~/.bashrc
 fi
 
-# set PATH so it includes user's private bin if it exists
-if [ -d ~/bin ] ; then
-    PATH=~/bin:"${PATH}"
+# Add user's private bins to PATH if they exist and
+# are not already in PATH (duplicated in bashrc)
+#
+for BIN in ${HOME}/.local/bin ${HOME}/bin ; do
+  [ -d "${BIN}" ] || continue
+  [[ ":${PATH}:" == *":${BIN}:"* ]] || PATH=${BIN}:${PATH}
+done
+
+if [ -d ~/go ]; then
+  for BIN in ${HOME}/go/bin /usr/local/go/bin ; do
+    [[ ":${PATH}:" == *":${BIN}:"* ]] || PATH=${BIN}:${PATH}
+  done
+  export GOBIN=~/go/bin
 fi
-
-PATH=~/go/bin:/usr/local/go/bin:${PATH}
-export GOBIN=~/go/bin
-
 
 export XAUTHORITY=~/.Xauthority

@@ -10,17 +10,21 @@ case $(/bin/hostname -s) in
         ;;
 esac
 
-# set PATH so it includes user's private bins if they exist
-if [ -d "$HOME/.local/bin" ] ; then
-    PATH="$HOME/.local/bin:$PATH"
-fi
-if [ -d "$HOME/bin" ] ; then
-    PATH="$HOME/bin:$PATH"
-fi
+# Add user's private bins to PATH if they exist and
+# are not already in PATH (duplicated in bash_profile)
+#
+for BIN in ${HOME}/.local/bin ${HOME}/bin ; do
+  [ -d "${BIN}" ] || continue
+  [[ ":${PATH}:" == *":${BIN}:"* ]] || PATH=${BIN}:${PATH}
+done
+
 if [ -d ~/go ]; then
-    PATH=~/go/bin:/usr/local/go/bin:${PATH}
-    export GOBIN=~/go/bin
+  for BIN in ${HOME}/go/bin /usr/local/go/bin ; do
+    [[ ":${PATH}:" == *":${BIN}:"* ]] || PATH=${BIN}:${PATH}
+  done
+  export GOBIN=~/go/bin
 fi
+
 if [ -f ~/.cargo/env ]; then
     . ~/.cargo/env
 fi
@@ -136,18 +140,18 @@ __load_git_prompt() {
 declare -F __git_ps1 > /dev/null || __load_git_prompt
 
 if [ "$color_prompt" = yes ]; then
-    PS1='${debian_chroot:+($debian_chroot)}\[\033[01;32m\]\u@\h\[\033[00m\]:\[\033[01;34m\]\w\[\033[00m\]$(__git_ps1)\$ '
+    PS1='${debian_chroot:+($debian_chroot)}\[\033[01;32m\]\u@\h\[\033[00m\]:\!:\[\033[01;34m\]\w\[\033[00m\]$(__git_ps1)\$ '
     # newer?
 	#PS1='${debian_chroot:+($debian_chroot)}\[\033[01;32m\]\u@\h\[\033[00m\] \[\033[01;34m\]\w \$\[\033[00m\] '
 else
-    PS1='${debian_chroot:+($debian_chroot)}\u@\h:\w$(__git_ps1)\$ '
+    PS1='${debian_chroot:+($debian_chroot)}\u@\h:\!:\w$(__git_ps1)\$ '
 fi
 unset color_prompt force_color_prompt
 
 # If this is an xterm set the title to user@host:dir
 case "$TERM" in
 xterm*|rxvt*)
-    PS1="\[\e]0;${debian_chroot:+($debian_chroot)}\u@\h: \w\a\]$PS1"
+    PS1="\[\e]0;${debian_chroot:+($debian_chroot)}\u@\h:\!: \w\a\]$PS1"
 #    PROMPT_COMMAND='echo -ne "\033]0;${USER}@${HOSTNAME}: ${PWD/$HOME/~}\007"'
     ;;
 *)
@@ -232,3 +236,4 @@ if /usr/bin/uname -r | /bin/grep -q microsoft ; then
     echo "On WSL, sourcing startup..." >&2
     [ -e ~/bin/start.sh ] && . ~/bin/start.sh
 fi
+
