@@ -1,5 +1,7 @@
 #!/bin/bash
 
+WINHOME_MOUNTPOINT=/mnt/winhome
+
 check_wsl() {
     # Best way I can think of to check at the moment
     if /usr/bin/uname -r | /bin/grep -q microsoft ; then
@@ -46,9 +48,33 @@ setup_ssh_agent() {
     done
 }
 
+ensure_winhome_mountpoint() {
+    [ -d "${WINHOME_MOUNTPOINT}" ] && return 0
+    [ ! -x "${WINHOME_MOUNTPOINT}" ] && /usr/bin/sudo /bin/mkdir -p ${WINHOME_MOUNTPOINT} && return 0
+    echo "Problem creating ${WINHOME_MOUNTPOINT}" >&2
+    return 1
+}
+
 setup_display() {
     # use localhost:0 if using e.g. vcxsrv, use :0 for WSLg
     export DISPLAY=:0
+}
+
+mount_win_fs() {
+    local WINPATH=$1 MOUNTPOINT=$2
+
+    # already mounted?
+    /usr/bin/df -t 9p ${MOUNTPOINT} > /dev/null 2>&1 && return 0
+
+    /usr/bin/sudo /bin/mount -t drvfs ${WINPATH} ${MOUNTPOINT} && return 0    
+}
+
+mount_winhome_fs() {
+    local WINPATH WINUSER=$1
+
+    WINPATH='c:\Users\'${WINUSER}
+    ensure_winhome_mountpoint || return 1
+    mount_win_fs ${WINPATH} ${WINHOME_MOUNTPOINT}
 }
 
 mount_ds_fs() {
@@ -57,7 +83,7 @@ mount_ds_fs() {
     # already mounted?
     /usr/bin/df -t 9p /mnt/ds/${FS} > /dev/null 2>&1 && return 0
 
-    sudo /bin/mount -t drvfs '\\ds\'${FS} /mnt/ds/${FS} && return 0
+    /usr/bin/sudo /bin/mount -t drvfs '\\ds\'${FS} /mnt/ds/${FS} && return 0
 }
 
 mount_ds() {
@@ -72,7 +98,15 @@ mount_ds() {
     #sudo /bin/mount -t drvfs '\\ds\photo' /mnt/ds/photo
 }
 
+add_id() {
+    local IDFILE=$1
+
+    /usr/bin/ssh-add ${WINHOME_MOUNTPOINT}/.ssh/${IDFILE}
+}
+
 check_wsl || exit
 setup_ssh_agent
 setup_display
-mount_ds
+#mount_ds
+mount_winhome_fs phini20p
+add_id id_ed25519
