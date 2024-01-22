@@ -92,6 +92,13 @@ mount_ds_fs() {
 }
 
 mount_ds() {
+    # to get credentials right...
+    # see https://learn.microsoft.com/en-us/archive/blogs/wsl/file-system-improvements-to-the-windows-subsystem-for-linux
+    #
+    # tl;dr - either mount the share in Windows before starting WSL,
+    # use Windows Credential Manager, or make some perverted calls to
+    # "net use" from within WSL.
+    #
     mount_ds_fs pub || echo "Mount failed for pub"
     mount_ds_fs Media || echo "Mount failed for Media"
     mount_ds_fs home || echo "Mount failed for home"
