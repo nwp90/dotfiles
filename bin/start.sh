@@ -78,7 +78,6 @@ mount_winhome_fs() {
     local WINPATH WINUSER="$1"
 
     WINPATH='C:\Users\'"${WINUSER}"
-    echo ${WINPATH}
     ensure_winhome_mountpoint || return 1
     mount_win_fs "${WINPATH}" ${WINHOME_MOUNT}
 }
@@ -116,6 +115,5 @@ check_wsl || exit
 setup_ssh_agent
 setup_display
 mount_ds
-echo ${WINUSER}
 mount_winhome_fs "${WINUSER}"
 add_id id_ed25519
