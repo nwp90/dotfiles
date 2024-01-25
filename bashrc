@@ -229,11 +229,11 @@ if ! shopt -oq posix; then
   fi
 fi
 
-# Doesn't work when ssh versions out of sync between win & wsl
-#[ -e "${HOME}/bin/win-ssh-agent.sh" ] && . "${HOME}/bin/win-ssh-agent.sh"
-
-if /usr/bin/uname -r | /bin/grep -q microsoft ; then
-    echo "On WSL, sourcing startup..." >&2
-    [ -e ~/bin/start.sh ] && . ~/bin/start.sh
+if [ -e ~/bin/wsltools.sh ] ; then
+    . ~/bin/wsltools.sh
+    if check_wsl ; then
+	echo "On WSL, sourcing startup..." >&2
+	[ -e ~/bin/wslstart.sh ] && . ~/bin/wslstart.sh
+    fi
 fi
 

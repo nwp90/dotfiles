@@ -1,10 +1,14 @@
 #!/bin/bash
 
 WINHOME_MOUNT="${WINHOME_MOUNT:=/mnt/winhome}"
-DSNAME="${DSNAME:=ds.localdomain}"
-WINUSER="${WINUSER:=Nick Phillips}"
+CIFSNAME="${CIFSNAME:=ds.localdomain}"
+WINUSER="${WINUSER:=phini20p}"
 
 STARTED_AGENT=0
+
+ensure_wsl() {
+    check_wsl || exit
+}
 
 check_wsl() {
     # Best way I can think of to check at the moment
@@ -82,32 +86,13 @@ mount_winhome_fs() {
     mount_win_fs "${WINPATH}" ${WINHOME_MOUNT}
 }
 
-mount_ds_fs() {
-    local FS=$1
+mount_cifs_fs() {
+    local MNTDIR=$1 FS=$2
 
     # already mounted?
-    /usr/bin/df -t 9p /mnt/ds/${FS} > /dev/null 2>&1 && return 0
+    /usr/bin/df -t 9p /mnt/${MNTDIR}/${FS} > /dev/null 2>&1 && return 0
 
-    /usr/bin/sudo /bin/mount -t drvfs '\\'${DSNAME}'\'${FS} /mnt/ds/${FS} && return 0
-}
-
-mount_ds() {
-    # to get credentials right...
-    # see https://learn.microsoft.com/en-us/archive/blogs/wsl/file-system-improvements-to-the-windows-subsystem-for-linux
-    #
-    # tl;dr - either mount the share in Windows before starting WSL,
-    # use Windows Credential Manager, or make some perverted calls to
-    # "net use" from within WSL.
-    #
-    mount_ds_fs pub || echo "Mount failed for pub"
-    mount_ds_fs Media || echo "Mount failed for Media"
-    mount_ds_fs home || echo "Mount failed for home"
-    mount_ds_fs photo || echo "Mount failed for photo"
-    
-    #sudo /bin/mount -t drvfs '\\ds\pub' /mnt/ds/pub
-    #sudo /bin/mount -t drvfs '\\ds\Media' /mnt/ds/Media
-    #sudo /bin/mount -t drvfs '\\ds\home' /mnt/ds/home
-    #sudo /bin/mount -t drvfs '\\ds\photo' /mnt/ds/photo
+    /usr/bin/sudo /bin/mount -t drvfs '\\'${CIFSNAME}'\'${FS} /mnt/${MNTDIR}/${FS} && return 0
 }
 
 add_id() {
@@ -118,9 +103,8 @@ add_id() {
     fi
 }
 
-check_wsl || exit
-setup_ssh_agent
-setup_display
-mount_ds
-mount_winhome_fs "${WINUSER}"
-add_id id_ed25519
+wsl_startup() {
+    setup_ssh_agent
+    setup_display
+    mount_winhome_fs "${WINUSER}"
+}
