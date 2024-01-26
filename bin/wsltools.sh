@@ -1,6 +1,6 @@
 #!/bin/bash
 
-WINHOME_MOUNT="${WINHOME_MOUNT:=/mnt/winhome}"
+export WINHOME="${WINHOME:=/mnt/winhome}"
 CIFSNAME="${CIFSNAME:=ds.localdomain}"
 WINUSER="${WINUSER:=phini20p}"
 
@@ -58,9 +58,9 @@ setup_ssh_agent() {
 }
 
 ensure_winhome_mountpoint() {
-    [ -d "${WINHOME_MOUNT}" ] && return 0
-    [ ! -x "${WINHOME_MOUNT}" ] && /usr/bin/sudo /bin/mkdir -p ${WINHOME_MOUNT} && return 0
-    echo "Problem creating ${WINHOME_MOUNT}" >&2
+    [ -d "${WINHOME}" ] && return 0
+    [ ! -x "${WINHOME}" ] && /usr/bin/sudo /bin/mkdir -p ${WINHOME} && return 0
+    echo "Problem creating ${WINHOME}" >&2
     return 1
 }
 
@@ -83,7 +83,7 @@ mount_winhome_fs() {
 
     WINPATH='C:\Users\'"${WINUSER}"
     ensure_winhome_mountpoint || return 1
-    mount_win_fs "${WINPATH}" ${WINHOME_MOUNT}
+    mount_win_fs "${WINPATH}" ${WINHOME}
 }
 
 mount_cifs_fs() {
@@ -99,7 +99,7 @@ add_id() {
     local IDFILE=$1
 
     if [ "${STARTED_AGENT}" = "1" ]; then
-	/usr/bin/ssh-add ${WINHOME_MOUNT}/.ssh/${IDFILE}
+	/usr/bin/ssh-add ${WINHOME}/.ssh/${IDFILE}
     fi
 }
 
