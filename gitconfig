@@ -1,10 +1,14 @@
 [user]
 	email = nwp@zepler.net
 	name = "Nick Phillips"
-	signingkey = D1BEE3B689A5DA01EE9D623F09731B059A483109
+#	signingkey = D1BEE3B689A5DA01EE9D623F09731B059A483109
+#	signingkey = F7EA0AD7DCFE81FC991C907A4402ED520B1B784E
+        signingkey = B5AC6E3E0B03C6F71C451393B9E1A7CF36F6A167
 [gpg]
 	program = gpg2
 
 # Would be great if it didn't keep needing terminal resets
 #[core]
 #	pager = git-split-diffs --color | less -RFX
+[init]
+	defaultBranch = main
