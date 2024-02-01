@@ -279,16 +279,20 @@
   (eval-after-load "flycheck"
     '(add-hook 'flycheck-mode-hook 'flycheck-color-mode-line-mode))
 
-  ;; From https://github.com/flycheck/flycheck/issues/1974#issuecomment-1343495202
+  (flycheck-def-config-file-var flycheck-python-ruff-config python-ruff
+                                '("pyproject.toml" "ruff.toml" ".ruff.toml"))
+
   (flycheck-define-checker python-ruff
-    "A Python syntax and style checker using the ruff utility.
+    "A Python syntax and style checker using the ruff.
 To override the path to the ruff executable, set
 `flycheck-python-ruff-executable'.
-See URL `http://pypi.python.org/pypi/ruff'."
+
+See URL `https://beta.ruff.rs/docs/'."
     :command ("ruff"
-              "--format=text"
-              (eval (when buffer-file-name
-                      (concat "--stdin-filename=" buffer-file-name)))
+              "check"
+              (config-file "--config" flycheck-python-ruff-config)
+              "--output-format=text"
+              "--stdin-filename" source-original
               "-")
     :standard-input t
     :error-filter (lambda (errors)
@@ -300,8 +304,47 @@ See URL `http://pypi.python.org/pypi/ruff'."
               (id (one-or-more (any alpha)) (one-or-more digit)) " "
               (message (one-or-more not-newline))
               line-end))
-    :modes python-mode)
+    :modes (python-mode python-ts-mode)
+    :next-checkers ((warning . python-mypy)))
 
+;; OLD
+;;   ;; From https://github.com/flycheck/flycheck/issues/1974#issuecomment-1343495202
+;;   (flycheck-define-checker python-ruff
+;;     "A Python syntax and style checker using the ruff utility.
+;; To override the path to the ruff executable, set
+;; `flycheck-python-ruff-executable'.
+;; See URL `http://pypi.python.org/pypi/ruff'."
+;;     :command ("ruff"
+;;               "--format=text"
+;;               (eval (when buffer-file-name
+;;                       (concat "--stdin-filename=" buffer-file-name)))
+;;               "-")
+;;     :standard-input t
+;;     :error-filter (lambda (errors)
+;;                     (let ((errors (flycheck-sanitize-errors errors)))
+;;                       (seq-map #'flycheck-flake8-fix-error-level errors)))
+;;     :error-patterns
+;;     ((warning line-start
+;;               (file-name) ":" line ":" (optional column ":") " "
+;;               (id (one-or-more (any alpha)) (one-or-more digit)) " "
+;;               (message (one-or-more not-newline))
+;;               line-end))
+;;     :modes python-mode)
+
+
+  ;; NEW suggested setup (mypy?)
+  ;; ;; Python config: Use ruff + mypy.
+  ;; (defun python-flycheck-setup ()
+  ;; (progn
+  ;;   (flycheck-select-checker 'python-ruff)
+  ;;   (flycheck-add-next-checker 'python-ruff 'python-mypy)
+  ;;   ))
+  ;; (after! flycheck
+  ;;         (add-to-list 'flycheck-checkers 'python-ruff)
+  ;;         (add-hook 'python-mode-local-vars-hook #'python-flycheck-setup 'append)
+  ;;         )
+
+  ;; OLD but still working
   (add-hook `python-mode-hook
             #'(lambda ()
                 (setq-local flycheck-checker `python-ruff)))
