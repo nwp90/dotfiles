@@ -1,8 +1,8 @@
 #!/bin/bash
 
-export WINHOME="${WINHOME:=/mnt/winhome}"
-CIFSNAME="${CIFSNAME:=ds.localdomain}"
-WINUSER="${WINUSER:=phini20p}"
+export WINHOME="${WINHOME:-/mnt/winhome}"
+CIFSNAME="${CIFSNAME:-foobar}"
+WINUSER="${WINUSER:-${USER}}"
 
 STARTED_AGENT=0
 
@@ -98,7 +98,7 @@ mount_cifs_fs() {
 add_id() {
     local IDFILE=$1 FILEID AGENTLINE
 
-    FILEID=$(/usr/bin/ssh-keygen -l -E sha256 -f ${WINHOME}/.ssh/${IDFILE} | perl -pe 's/256 (SHA256:[a-zA-Z0-9]+)\s.*/$1/')
+    FILEID=$(/usr/bin/ssh-keygen -l -E sha256 -f ${WINHOME}/.ssh/${IDFILE} | perl -pe 's/256 (SHA256:[a-zA-Z0-9/]+)\s.*/$1/')
 
     if [ -n "${FILEID}" ]; then
         AGENTLINE=$(/usr/bin/ssh-add -l -E sha256 | /bin/grep "${FILEID}")
