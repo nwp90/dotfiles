@@ -96,9 +96,16 @@ mount_cifs_fs() {
 }
 
 add_id() {
-    local IDFILE=$1
+    local IDFILE=$1 FILEID AGENTLINE
 
-    if [ "${STARTED_AGENT}" = "1" ]; then
+    FILEID=$(/usr/bin/ssh-keygen -l -E sha256 -f ${WINHOME}/.ssh/${IDFILE} | perl -pe 's/256 (SHA256:[a-zA-Z0-9]+)\s.*/$1/')
+
+    if [ -n "${FILEID}" ]; then
+        AGENTLINE=$(/usr/bin/ssh-add -l -E sha256 | /bin/grep "${FILEID}")
+    fi
+    
+    if [ -z "${AGENTLINE}" ]; then
+        echo "Loading key from ${WINHOME}/.ssh/${IDFILE}..." >&2
 	/usr/bin/ssh-add ${WINHOME}/.ssh/${IDFILE}
     fi
 }
