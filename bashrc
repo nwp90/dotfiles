@@ -17,6 +17,8 @@ for BIN in ${HOME}/.local/bin ${HOME}/bin ; do
   [ -d "${BIN}" ] || continue
   [[ ":${PATH}:" == *":${BIN}:"* ]] || PATH=${BIN}:${PATH}
 done
+# something also sets up ~/.local/bin with an env file
+#. "$HOME/.local/bin/env"
 
 if [ -d ~/go ]; then
   for BIN in ${HOME}/go/bin /usr/local/go/bin ; do
@@ -31,7 +33,10 @@ fi
 if [ -d ~/.rye ]; then
     . ~/.rye/env
 fi
-
+if [ -e ~/.volta ]; then
+    PATH="$VOLTA_HOME/bin:$PATH"
+    export VOLTA_HOME="$HOME/.volta"
+fi
 
 export DEBEMAIL=nwp@debian.org
 export DEBFULLNAME="Nick Phillips"
