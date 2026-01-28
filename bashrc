@@ -2,6 +2,8 @@
 # see /usr/share/doc/bash/examples/startup-files (in the package bash-doc)
 # for examples
 
+[ -e ~/.bash_private ] && . ~/.bash_private
+
 # per-host settings
 case $(/bin/hostname -s) in
     inf-*) ;&
@@ -30,16 +32,12 @@ fi
 if [ -f ~/.cargo/env ]; then
     . ~/.cargo/env
 fi
-if [ -d ~/.rye ]; then
-    . ~/.rye/env
-fi
+
 if [ -e ~/.volta ]; then
     PATH="$VOLTA_HOME/bin:$PATH"
     export VOLTA_HOME="$HOME/.volta"
 fi
 
-export DEBEMAIL=nwp@debian.org
-export DEBFULLNAME="Nick Phillips"
 export HGMERGE=/usr/bin/meld
 #export XAUTHORITY=${HOME}/.Xauthority
 # The only one that makes sense
@@ -50,7 +48,12 @@ export LC_COLLATE=C
 export ONEVPL_SEARCH_PATH=/opt/intel/oneapi/vpl/latest/lib
 
 # Because Grrr....
-export REQUESTS_CA_BUNDLE=/etc/ssl/certs/ca-certificates.crt
+for thing in /etc/ssl/certs/ca-certificates.crt /etc/pki/tls/certs/ca-bundle.crt
+do
+  [ ! -e "${thing}" ] && continue
+  export REQUESTS_CA_BUNDLE=${thing}
+  break
+done
 
 # If not running interactively, don't do anything. Unless we've already done it.
 case $- in
@@ -242,3 +245,6 @@ if [ -e ~/bin/wsltools.sh ] ; then
     fi
 fi
 
+[ -e ~/.projectdiscovery ] && . ~/.projectdiscovery
+
+export UV_NATIVE_TLS=true
